@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Etshy\AutoMapper\PropertyMapper;
 
 use Etshy\AutoMapper\Configuration\Options;
+use Etshy\AutoMapper\Exception\CantMapPropertyException;
 use Etshy\AutoMapper\PropertyAccessor\ArrayPropertyAccessor;
 use Etshy\AutoMapper\PropertyAccessor\ObjectPropertyAccessor;
 use Etshy\AutoMapper\PropertyAccessor\PropertyAccessorInterface;
@@ -31,10 +32,13 @@ class DefaultPropertyMapper implements PropertyMapperInterface
         ];
     }
 
+    /**
+     * @throws CantMapPropertyException
+     */
     public function mapProperty(string $propertyName, array|object $source, array|object &$destination): void
     {
         if (!$this->canMap($propertyName, $source, $destination)) {
-            // Alternatively throw an error here.
+            // if can't map, just ignore ir
             return;
         }
 
@@ -87,5 +91,10 @@ class DefaultPropertyMapper implements PropertyMapperInterface
     public function setOptions(Options $options): void
     {
         $this->options = $options;
+    }
+
+    public function getOptions(): Options
+    {
+        return $this->options;
     }
 }

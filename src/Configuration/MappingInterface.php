@@ -12,9 +12,7 @@ interface MappingInterface
 
     public function getPropertyMapperFor(string $propertyName): PropertyMapperInterface;
 
-    public function forMember(string $targetPropertyName, $operation): MappingInterface;
-
-    public function skipConstructor(): object;
+    public function forMember(string $targetPropertyName, $propertyMapper): MappingInterface;
 
     public function getOptions(): Options;
 }

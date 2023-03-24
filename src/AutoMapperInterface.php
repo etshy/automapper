@@ -10,4 +10,9 @@ interface AutoMapperInterface
 
     public function mapToObject(array|object $source, array|object $destination);
 
+    public function mapMultiple(
+        $sourceCollection,
+        string $targetClass
+    ): array;
+
 }

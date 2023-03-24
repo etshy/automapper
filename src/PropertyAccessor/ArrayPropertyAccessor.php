@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Etshy\AutoMapper\PropertyAccessor;
 
+use Etshy\AutoMapper\Exception\SourceNotIterableException;
+
 class ArrayPropertyAccessor implements PropertyAccessorInterface
 {
 
@@ -28,10 +30,14 @@ class ArrayPropertyAccessor implements PropertyAccessorInterface
         $destination[$propertyName] = $value;
     }
 
+
+    /**
+     * @throws SourceNotIterableException
+     */
     public function getPropertiesName($object): array
     {
         if (!is_array($object)) {
-            //TODO EXCEPTION
+            throw new SourceNotIterableException();
         }
 
         return array_keys($object);

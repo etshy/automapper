@@ -10,7 +10,7 @@ interface PropertyAccessorInterface extends PropertyReaderInterface, PropertyWri
     public const OBJECT_ACCESSOR = 'object';
 
     /**
-     * @param object|array $object
+     * @param mixed $object
      *
      * @return array
      */

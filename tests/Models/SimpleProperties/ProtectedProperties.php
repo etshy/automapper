@@ -8,6 +8,7 @@ class ProtectedProperties
 {
     protected ?string $prop1 = null;
     protected ?int $prop2 = null;
+    protected ?int $prop3 = null;
 
     /**
      * @return string|null
@@ -39,5 +40,21 @@ class ProtectedProperties
     public function setProp2(?int $prop2): void
     {
         $this->prop2 = $prop2;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getProp3(): ?int
+    {
+        return $this->prop3;
+    }
+
+    /**
+     * @param int|null $prop3
+     */
+    public function setProp3(?int $prop3): void
+    {
+        $this->prop3 = $prop3;
     }
 }

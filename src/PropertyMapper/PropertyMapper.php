@@ -7,6 +7,7 @@ namespace Etshy\AutoMapper\PropertyMapper;
 use Etshy\AutoMapper\PropertyMapper\Mapper\FromCallable;
 use Etshy\AutoMapper\PropertyMapper\Mapper\FromProperty;
 use Etshy\AutoMapper\PropertyMapper\Mapper\Ignore;
+use Etshy\AutoMapper\PropertyMapper\Mapper\ToClass;
 
 class PropertyMapper
 {
@@ -23,5 +24,13 @@ class PropertyMapper
     public static function fromProperty(string $propertyName): FromProperty
     {
         return new FromProperty($propertyName);
+    }
+
+
+    public static function toClass(
+        string $destinationClass,
+        bool $sourceIsObjectArray = false
+    ): ToClass {
+        return new ToClass($destinationClass, $sourceIsObjectArray);
     }
 }

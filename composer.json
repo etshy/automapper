@@ -5,9 +5,11 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Etshy\\AutoMapper\\": "src/",
-      "Etshy\\Tests\\": "tests/"
+      "Etshy\\AutoMapper\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "Etshy\\Tests\\": "tests/"
   },
   "authors": [
     {

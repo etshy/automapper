@@ -91,7 +91,7 @@ class ObjectPropertyAccessor implements PropertyAccessorInterface
 
     public function getPropertiesName($object): array
     {
-        $closure = Closure::bind(fn() => get_object_vars($this), $object, $object);
+        $closure = Closure::bind(fn() => get_class_vars($this::class), $object, $object);
 
         return array_keys($closure($object));
     }

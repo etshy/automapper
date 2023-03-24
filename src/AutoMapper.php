@@ -7,6 +7,9 @@ namespace Etshy\AutoMapper;
 use Etshy\AutoMapper\Configuration\AutoMapperConfiguration;
 use Etshy\AutoMapper\Configuration\AutoMapperConfigurationInterface;
 use Etshy\AutoMapper\Configuration\MappingInterface;
+use Etshy\AutoMapper\Exception\MappingNotFoundException;
+use Etshy\AutoMapper\Exception\SourceNotIterableException;
+use Etshy\AutoMapper\Exception\UnknownSourceTypeException;
 
 class AutoMapper implements AutoMapperInterface
 {
@@ -20,38 +23,53 @@ class AutoMapper implements AutoMapperInterface
         $this->autoMapperConfig = $autoMapperConfig ?? new AutoMapperConfiguration();
     }
 
-    public static function initialize(callable $configurator): AutoMapperInterface
-    {
-        $mapper = new static;
-        $configurator($mapper->autoMapperConfig);
-
-        return $mapper;
-    }
-
+    /**
+     * @param array|object $source
+     * @param string $destination
+     *
+     * @return object|array|null
+     * @throws MappingNotFoundException
+     * @throws UnknownSourceTypeException
+     */
     public function map(array|object $source, string $destination): object|array|null
     {
         $sourceName = $this->getSourceDestinationName($source);
 
         $mapping = $this->autoMapperConfig->getMapping($sourceName, $destination);
+
         if (null === $mapping) {
-            //TODO throw exception
+            throw new MappingNotFoundException();
         }
 
-        //TODO hasCustomMapper when it's implemented
-        //if hasCustomMapper then call callable custom mapper
-
-        if ($destination === DataTypeEnum::ARRAY) {
-            return $this->doMap($source, [], $mapping);
-        }
-
-        if ($mapping->getOptions()->isConstructorSkipped()) {
-            $destinationClass = $mapping->skipConstructor();
-        } else {
-            $destinationClass = new $destination();
-        }
-
+        $destinationClass = new $destination();
 
         return $this->doMap($source, $destinationClass, $mapping);
+    }
+
+    /**
+     * @param $sourceCollection
+     * @param string $targetClass
+     *
+     * @return array
+     * @throws MappingNotFoundException
+     * @throws UnknownSourceTypeException
+     * @throws SourceNotIterableException
+     */
+    public function mapMultiple(
+        $sourceCollection,
+        string $targetClass
+    ): array {
+        if (!is_iterable($sourceCollection)) {
+            //THROW EXCEPTION
+            throw new SourceNotIterableException();
+        }
+
+        $mappedResults = [];
+        foreach ($sourceCollection as $source) {
+            $mappedResults[] = $this->map($source, $targetClass);
+        }
+
+        return $mappedResults;
     }
 
     /**
@@ -59,6 +77,8 @@ class AutoMapper implements AutoMapperInterface
      * @param array|object $destination
      *
      * @return object|array|null
+     * @throws MappingNotFoundException
+     * @throws UnknownSourceTypeException
      */
     public function mapToObject(array|object $source, array|object $destination): object|array|null
     {
@@ -68,28 +88,30 @@ class AutoMapper implements AutoMapperInterface
 
         $mapping = $this->autoMapperConfig->getMapping($sourceName, $destinationName);
         if (null === $mapping) {
-            //TODO throw exception
-        }
-
-        //TODO hasCustomMapper when it's implemented
-        //if hasCustomMapper then call callable custom mapper
-
-        if ($destinationName === DataTypeEnum::ARRAY) {
-            return $this->doMap($source, [], $mapping);
+            throw new MappingNotFoundException();
         }
 
         return $this->doMap($source, $destination, $mapping);
     }
 
+    /**
+     * @param array|object $source
+     * @param array|object $destination
+     * @param MappingInterface $mapping
+     *
+     * @return object|array
+     */
     private function doMap(array|object $source, array|object $destination, MappingInterface $mapping): object|array
     {
         $propertiesName = $mapping->getTargetPropertiesName($destination);
+
+
         foreach ($propertiesName as $propertyName) {
             $propertyMapper = $mapping->getPropertyMapperFor($propertyName);
             if ($propertyMapper instanceof MapperAwareInterface) {
                 $propertyMapper->setMapper($this);
             }
-
+            
             $propertyMapper->mapProperty($propertyName, $source, $destination);
         }
 
@@ -100,6 +122,7 @@ class AutoMapper implements AutoMapperInterface
      * @param array|object $source
      *
      * @return string
+     * @throws UnknownSourceTypeException
      */
     public function getSourceDestinationName(array|object $source): string
     {
@@ -107,9 +130,6 @@ class AutoMapper implements AutoMapperInterface
             $sourceName = $source::class;
         } else {
             $sourceName = gettype($source);
-            if ($sourceName !== DataTypeEnum::ARRAY) {
-                //TODO throw exception
-            }
         }
 
         return $sourceName;

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Etshy\AutoMapper\PropertyMapper\Mapper;
 
-use Etshy\AutoMapper\PropertyMapper\PropertyMapperInterface;
+use Etshy\AutoMapper\PropertyMapper\DefaultPropertyMapper;
 
-class Ignore implements PropertyMapperInterface
+class Ignore extends DefaultPropertyMapper
 {
-
-    public function mapProperty(string $propertyName, $source, &$destination): void
+    protected function canMap(string $property, object|array $source, object|array $destination): bool
     {
-        //nothing
+        //it will be ignored anyway
+        return false;
     }
 }

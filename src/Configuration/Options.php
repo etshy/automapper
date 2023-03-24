@@ -6,29 +6,9 @@ namespace Etshy\AutoMapper\Configuration;
 
 class Options
 {
-    private bool $constructorSkipped = true;
     private bool $nullPropertiesIgnored = false;
 
-    public function isConstructorSkipped(): bool
-    {
-        return $this->constructorSkipped;
-    }
-
-    public function skipConstructor(): self
-    {
-        $this->constructorSkipped = true;
-
-        return $this;
-    }
-
-    public function dontSkipConstructor(): self
-    {
-        $this->constructorSkipped = false;
-
-        return $this;
-    }
-
-    public function ignoreNUllProperties(): self
+    public function ignoreNullProperties(): self
     {
         $this->nullPropertiesIgnored = true;
 

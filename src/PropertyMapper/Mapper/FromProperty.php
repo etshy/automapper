@@ -24,16 +24,17 @@ class FromProperty extends DefaultPropertyMapper
             return false;
         }
 
-        return $this->getWriter($destination)->destinationHasProperty($destination, $this->propertyName);
+        return $this->getWriter($destination)->destinationHasProperty($destination, $property);
     }
 
     public function mapProperty(string $propertyName, object|array $source, object|array &$destination): void
     {
-        if (!$this->canMap($this->propertyName, $source, $destination)) {
-            // Alternatively throw an error here.
+        if (!$this->canMap($propertyName, $source, $destination)) {
+            // throw an error here.
             return;
         }
+
         $value = $this->getSourceValue($this->propertyName, $source);
-        $this->setDestinationValue($this->propertyName, $destination, $value);
+        $this->setDestinationValue($propertyName, $destination, $value);
     }
 }

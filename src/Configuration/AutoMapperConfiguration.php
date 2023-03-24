@@ -12,17 +12,19 @@ class AutoMapperConfiguration implements AutoMapperConfigurationInterface
 
     public function registerMapping(string $source, string $destination): MappingInterface
     {
-        $mapping = new Mapping($source, $destination);
+        $mapping = new Mapping($destination);
         $this->mappings["$source|$destination"] = $mapping;
+
         return $mapping;
     }
 
     public function getMapping(string $source, string $destination): ?MappingInterface
     {
-        $mapping = $this->mappings["$source|$destination"] ?? NULL;
+        $mapping = $this->mappings["$source|$destination"] ?? null;
         if ($mapping) {
             return $mapping;
         }
+
         return null;
     }
 }
