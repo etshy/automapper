@@ -268,6 +268,26 @@ class AutoMapperTest extends TestCase
      * @throws MappingNotFoundException
      * @throws UnknownSourceTypeException
      */
+    public function testMapWithCallable(): void
+    {
+        $source = new ProtectedProperties();
+        $source->setProp1('12');
+        $this->config->registerMapping(ProtectedProperties::class, PrivateProperties::class)
+            ->forMember(
+                'prop2',
+                static fn(ProtectedProperties $class) => (int)$class->getProp1()
+            );
+        $mapper = new AutoMapper($this->config);
+        $mapped = $mapper->map($source, PrivateProperties::class);
+        $this->assertInstanceOf(PrivateProperties::class, $mapped);
+        $this->assertEquals((int)$source->getProp1(), $mapped->getProp2());
+    }
+
+    /**
+     * @return void
+     * @throws MappingNotFoundException
+     * @throws UnknownSourceTypeException
+     */
     public function testMapWithOptionIgnoreNullOnMapping(): void
     {
         $source = new ProtectedProperties();
