@@ -13,6 +13,16 @@ include:
   - template: Code-Quality.gitlab-ci.yml
   - template: Security/SAST.gitlab-ci.yml
 
+build_project:
+  stage: build
+  image: php:8.1-cli
+  script: 
+    - apt-get update && apt-get -yq install git unzip zip libzip-dev zlib1g-dev
+    - docker-php-ext-install zip #install eip inside docker image
+    - pecl install xdebug && docker-php-ext-enable xdebug #install xdebug in the vm and docker image
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" #install composer
+    - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
 code_quality:
   stage: test
 
@@ -21,15 +31,11 @@ sast:
 
 unit_test:
   stage: test
-  image: php:8.1-cli
+  needs:
+    - build_project
   variables:
     XDEBUG_MODE: coverage
   before_script:
-    - apt-get update && apt-get -yq install git unzip zip libzip-dev zlib1g-dev
-    - docker-php-ext-install zip #install eip inside docker image
-    - pecl install xdebug && docker-php-ext-enable xdebug #install xdebug in the vm and docker image
-    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" #install composer
-    - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     - composer install #install dependencies
     - composer require --dev phpunit/phpunit phpunit/php-code-coverage # require phpunit packages
   script:
