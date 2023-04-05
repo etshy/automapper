@@ -43,6 +43,7 @@ unit_test:
       coverage_report:
         coverage_format: cobertura
         path: coverage.cobertura.xml
+  coverage: /^\s*Lines:\s*\d+.\d+\%/
 
 
 
