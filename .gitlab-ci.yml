@@ -5,9 +5,43 @@
 # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
-stages:
-- test
+
+default:
+  interruptible: true
+
+include:
+  - template: Code-Quality.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+
+code_quality:
+  rules:
+    - if: $CODE_QUALITY_DISABLED
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Run code quality job in merge request pipelines
+
 sast:
   stage: test
-include:
-- template: Security/SAST.gitlab-ci.yml
+
+unit_test:
+  stage: test
+  image: php:8.1-cli
+  variables:
+    XDEBUG_MODE: coverage
+  before_script:
+    - apt-get update && apt-get -yq install git unzip zip libzip-dev zlib1g-dev
+    - docker-php-ext-install zip #install eip inside docker image
+    - pecl install xdebug && docker-php-ext-enable xdebug #install xdebug in the vm and docker image
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" #install composer
+    - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+    - composer install #install dependencies
+    - composer require --dev phpunit/phpunit phpunit/php-code-coverage # require phpunit packages
+  script:
+    - php vendor/bin/phpunit --coverage-text --coverage-cobertura=coverage.cobertura.xml
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.cobertura.xml
+
+
+
