@@ -9,7 +9,9 @@
     }
   },
   "autoload-dev": {
-    "Etshy\\Tests\\": "tests/"
+    "psr-4": {
+      "Etshy\\Tests\\": "tests/"
+    }
   },
   "authors": [
     {
