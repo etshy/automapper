@@ -25,8 +25,11 @@ class DefaultPropertyMapper implements PropertyMapperInterface
 
     public function __construct()
     {
-        $this->propertyReaders = $this->propertyWriters = [
+        $this->propertyReaders = [
             PropertyAccessorInterface::ARRAY_ACCESSOR => new ArrayPropertyAccessor(),
+            PropertyAccessorInterface::OBJECT_ACCESSOR => new ObjectPropertyAccessor(),
+        ];
+        $this->propertyWriters = [
             PropertyAccessorInterface::OBJECT_ACCESSOR => new ObjectPropertyAccessor(),
         ];
     }

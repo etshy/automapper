@@ -6,7 +6,7 @@ namespace Etshy\AutoMapper\PropertyAccessor;
 
 use Etshy\AutoMapper\Exception\SourceNotIterableException;
 
-class ArrayPropertyAccessor implements PropertyAccessorInterface
+class ArrayPropertyAccessor implements PropertyReaderInterface
 {
 
     public function sourceHasProperty($source, string $propertyName): bool
@@ -18,18 +18,6 @@ class ArrayPropertyAccessor implements PropertyAccessorInterface
     {
         return $source[$propertyName] ?? null;
     }
-
-    public function destinationHasProperty($destination, string $propertyName): bool
-    {
-        //that's an array duh!
-        return true;
-    }
-
-    public function setPropertyValue(&$destination, string $propertyName, mixed $value): void
-    {
-        $destination[$propertyName] = $value;
-    }
-
 
     /**
      * @throws SourceNotIterableException
