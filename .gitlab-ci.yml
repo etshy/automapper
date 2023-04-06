@@ -21,8 +21,6 @@ unit_test:
   interruptible: true
   stage: test
   image: php:8.1
-  needs:
-    - build_project
   variables:
     XDEBUG_MODE: coverage
   before_script:
