@@ -17,7 +17,7 @@ code_quality:
 sast:
   stage: test
 
-unit_test:
+unit_test:8.1:
   interruptible: true
   stage: test
   image: php:8.1
