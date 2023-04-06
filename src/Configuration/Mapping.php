@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Etshy\AutoMapper\Configuration;
 
-use Etshy\AutoMapper\DataTypeEnum;
 use Etshy\AutoMapper\Exception\SourceNotIterableException;
-use Etshy\AutoMapper\PropertyAccessor\ArrayPropertyAccessor;
 use Etshy\AutoMapper\PropertyAccessor\ObjectPropertyAccessor;
 use Etshy\AutoMapper\PropertyAccessor\PropertyWriterInterface;
 use Etshy\AutoMapper\PropertyMapper\DefaultPropertyMapper;
@@ -25,11 +23,7 @@ class Mapping implements MappingInterface
     ) {
         $this->options = new Options();
 
-        if ($destination === DataTypeEnum::ARRAY) {
-            $this->propertyWriter = new ArrayPropertyAccessor();
-        } else {
-            $this->propertyWriter = new ObjectPropertyAccessor();
-        }
+        $this->propertyWriter = new ObjectPropertyAccessor();
 
         $this->defaultPropertyMapper = new DefaultPropertyMapper();
         $this->defaultPropertyMapper->setOptions($this->options);
