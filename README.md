@@ -10,7 +10,7 @@ This library doesn't use any Reflection !
 
 ### Installation
 
-`composer require etshy/auto-mapper`
+`composer require etshy/automapper`
 
 Future bundle for symfony here
 
