@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Etshy\AutoMapper\PropertyMapper;
 
 use Etshy\AutoMapper\Configuration\Options;
-use Etshy\AutoMapper\Exception\CantMapPropertyException;
 use Etshy\AutoMapper\PropertyAccessor\ArrayPropertyAccessor;
 use Etshy\AutoMapper\PropertyAccessor\ObjectPropertyAccessor;
 use Etshy\AutoMapper\PropertyAccessor\PropertyAccessorInterface;
@@ -32,9 +31,6 @@ class DefaultPropertyMapper implements PropertyMapperInterface
         ];
     }
 
-    /**
-     * @throws CantMapPropertyException
-     */
     public function mapProperty(string $propertyName, array|object $source, array|object &$destination): void
     {
         if (!$this->canMap($propertyName, $source, $destination)) {
@@ -53,7 +49,7 @@ class DefaultPropertyMapper implements PropertyMapperInterface
             return false;
         }
 
-        return $this->getWriter($destination)->destinationHasProperty($destination, $property);
+        return $this->getWriter()->destinationHasProperty($destination, $property);
     }
 
     protected function getSourceValue(string $propertyName, array|object $source)
@@ -67,7 +63,7 @@ class DefaultPropertyMapper implements PropertyMapperInterface
             return;
         }
 
-        $this->getWriter($destination)->setPropertyValue($destination, $propertyName, $value);
+        $this->getWriter()->setPropertyValue($destination, $propertyName, $value);
     }
 
     protected function getReader(array|object $object): PropertyReaderInterface
@@ -79,12 +75,8 @@ class DefaultPropertyMapper implements PropertyMapperInterface
         return $this->propertyReaders[PropertyAccessorInterface::OBJECT_ACCESSOR];
     }
 
-    protected function getWriter(array|object $object): PropertyWriterInterface
+    protected function getWriter(): PropertyWriterInterface
     {
-        if (is_array($object)) {
-            return $this->propertyWriters[PropertyAccessorInterface::ARRAY_ACCESSOR];
-        }
-
         return $this->propertyWriters[PropertyAccessorInterface::OBJECT_ACCESSOR];
     }
 

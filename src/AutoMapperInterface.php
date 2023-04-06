@@ -8,7 +8,7 @@ interface AutoMapperInterface
 {
     public function map(array|object $source, string $destination);
 
-    public function mapToObject(array|object $source, array|object $destination);
+    public function mapToObject(array|object $source, object $destination);
 
     public function mapMultiple(
         $sourceCollection,

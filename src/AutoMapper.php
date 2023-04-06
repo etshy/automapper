@@ -74,13 +74,13 @@ class AutoMapper implements AutoMapperInterface
 
     /**
      * @param array|object $source
-     * @param array|object $destination
+     * @param object $destination
      *
      * @return object|array|null
      * @throws MappingNotFoundException
      * @throws UnknownSourceTypeException
      */
-    public function mapToObject(array|object $source, array|object $destination): object|array|null
+    public function mapToObject(array|object $source, object $destination): object|array|null
     {
         $sourceName = $this->getSourceDestinationName($source);
 

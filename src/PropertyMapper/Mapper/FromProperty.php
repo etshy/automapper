@@ -30,7 +30,6 @@ class FromProperty extends DefaultPropertyMapper
     public function mapProperty(string $propertyName, object|array $source, object|array &$destination): void
     {
         if (!$this->canMap($propertyName, $source, $destination)) {
-            // throw an error here.
             return;
         }
 
