@@ -1,5 +1,9 @@
 # AutoMapper
 
+
+[![pipeline status](https://gitlab.com/Etshy/automapper/badges/main/pipeline.svg)](https://gitlab.com/Etshy/automapper/-/commits/main) 
+[![coverage report](https://gitlab.com/Etshy/automapper/badges/main/coverage.svg)](https://gitlab.com/Etshy/automapper/-/commits/main)
+
 A lightweight library to quickly map an object or an array to another object. I hope this cover most of you use-cases
 
 This library doesn't use any Reflection !
