@@ -47,12 +47,12 @@ class DefaultPropertyMapper implements PropertyMapperInterface
 
     protected function canMap(string $property, array|object $source, array|object $destination): bool
     {
-        if (!$this->getReader($source)->sourceHasProperty($source, $property)) {
+        if (!$this->getReader($source)->hasProperty($source, $property)) {
             //for whatever reasons, the source doesn't have a property
             return false;
         }
 
-        return $this->getWriter()->destinationHasProperty($destination, $property);
+        return $this->getWriter()->hasProperty($destination, $property);
     }
 
     protected function getSourceValue(string $propertyName, array|object $source)

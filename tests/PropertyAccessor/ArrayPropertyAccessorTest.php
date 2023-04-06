@@ -36,7 +36,7 @@ class ArrayPropertyAccessorTest extends TestCase
         $expectedResult
     ): void {
         $accessor = new ArrayPropertyAccessor();
-        $result = $accessor->sourceHasProperty([
+        $result = $accessor->hasProperty([
             $sourcePropertyName => 'test',
         ], $propertyName);
         $this->assertEquals($expectedResult, $result);
@@ -95,11 +95,10 @@ class ArrayPropertyAccessorTest extends TestCase
         $sourcePropertyName,
         $propertyName,
         $expectedResult
-    ): void
-    {
+    ): void {
         $accessor = new ArrayPropertyAccessor();
         $result = $accessor->getPropertyValue([
-            $sourcePropertyName => 'test'
+            $sourcePropertyName => 'test',
         ], $propertyName);
 
         $this->assertEquals($expectedResult, $result);

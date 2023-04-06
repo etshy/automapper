@@ -6,7 +6,7 @@ namespace Etshy\AutoMapper\PropertyAccessor;
 
 interface PropertyWriterInterface
 {
-    public function destinationHasProperty($destination, string $propertyName): bool;
+    public function hasProperty($object, string $propertyName): bool;
 
     public function setPropertyValue(&$destination, string $propertyName, mixed $value): void;
 }

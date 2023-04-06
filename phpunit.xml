@@ -25,6 +25,7 @@
         </include>
         <exclude>
             <directory suffix=".php">src/Exception/</directory>
+            <directory suffix="Interface.php">src</directory>
             <file>src/DataTypeEnum.php</file>
         </exclude>
     </coverage>

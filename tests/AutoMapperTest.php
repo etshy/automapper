@@ -11,6 +11,7 @@ use Etshy\AutoMapper\Exception\MappingNotFoundException;
 use Etshy\AutoMapper\Exception\SourceNotIterableException;
 use Etshy\AutoMapper\Exception\UnknownSourceTypeException;
 use Etshy\AutoMapper\PropertyMapper\PropertyMapper;
+use Etshy\Tests\Models\ExtendingClass\FinalClass;
 use Etshy\Tests\Models\SimpleProperties\PrivateProperties;
 use Etshy\Tests\Models\SimpleProperties\ProtectedProperties;
 use Etshy\Tests\Models\SimpleProperties\PublicProperties;
@@ -146,6 +147,27 @@ class AutoMapperTest extends TestCase
         $this->assertIsArray($mapped->getChildren());
         $this->assertContainsOnlyInstancesOf(ChildClass::class, $mapped->getChildren());
         $this->assertEquals($expected, $mapped->getChildren()[0]->getField());
+    }
+
+    /**
+     * @return void
+     * @throws MappingNotFoundException
+     * @throws UnknownSourceTypeException
+     */
+    public function testMapWithParentClass(): void
+    {
+        $source = new FinalClass();
+        $source->setFinalField('final');
+        $source->setAbstractField('abstract');
+        $source->setAbstractField2('abstract2');
+        $this->config->registerMapping(FinalClass::class, FinalClass::class);
+        $mapper = new AutoMapper($this->config);
+        /** @var FinalClass $mapped */
+        $mapped = $mapper->map($source, FinalClass::class);
+        $this->assertInstanceOf(FinalClass::class, $mapped);
+        $this->assertEquals($source->getAbstractField2(), $mapped->getAbstractField2());
+        $this->assertEquals($source->getAbstractField(), $mapped->getAbstractField());
+        $this->assertEquals($source->getFinalField(), $mapped->getFinalField());
     }
 
     /**
@@ -372,5 +394,19 @@ class AutoMapperTest extends TestCase
 
         $this->expectException(SourceNotIterableException::class);
         $mapper->mapMultiple($source, PrivateProperties::class);
+    }
+
+    /**
+     * @return void
+     * @throws MappingNotFoundException
+     * @throws UnknownSourceTypeException
+     */
+    public function testMapToObjectThrowException(): void
+    {
+        $source = new PublicProperties();
+        $mapper = new AutoMapper($this->config);
+
+        $this->expectException(MappingNotFoundException::class);
+        $mapper->mapToObject($source, new ProtectedProperties());
     }
 }

@@ -19,12 +19,12 @@ class FromProperty extends DefaultPropertyMapper
 
     protected function canMap(string $property, object|array $source, object|array $destination): bool
     {
-        if (!$this->getReader($source)->sourceHasProperty($source, $this->propertyName)) {
+        if (!$this->getReader($source)->hasProperty($source, $this->propertyName)) {
             //for whatever reasons, the source doesn't have a property
             return false;
         }
 
-        return $this->getWriter($destination)->destinationHasProperty($destination, $property);
+        return $this->getWriter($destination)->hasProperty($destination, $property);
     }
 
     public function mapProperty(string $propertyName, object|array $source, object|array &$destination): void

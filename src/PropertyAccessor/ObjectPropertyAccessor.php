@@ -9,9 +9,15 @@ use Closure;
 class ObjectPropertyAccessor implements PropertyAccessorInterface
 {
 
-    public function sourceHasProperty($source, string $propertyName): bool
+    public function hasProperty($object, string $propertyName): bool
     {
-        return $this->hasProperty($source, $propertyName);
+        if (property_exists($object, $propertyName)) {
+            return true;
+        }
+
+        $properties = $this->getPropertiesName($object);
+
+        return in_array($propertyName, $properties, true);
     }
 
     public function getPropertyValue($source, string $propertyName): mixed
@@ -23,11 +29,6 @@ class ObjectPropertyAccessor implements PropertyAccessorInterface
         return $this->getPrivateValue($source, $propertyName);
     }
 
-    public function destinationHasProperty($destination, string $propertyName): bool
-    {
-        return $this->hasProperty($destination, $propertyName);
-    }
-
     public function setPropertyValue(&$destination, string $propertyName, mixed $value): void
     {
         if ($this->isPublic($destination, $propertyName)) {
@@ -35,18 +36,6 @@ class ObjectPropertyAccessor implements PropertyAccessorInterface
         }
 
         $this->setPrivateValue($destination, $propertyName, $value);
-    }
-
-    private function hasProperty(object $object, string $property): bool
-    {
-        if (property_exists($object, $property)) {
-            return true;
-        }
-        if (get_parent_class($object)) {
-            return $this->hasProperty($object, $property);
-        }
-
-        return false;
     }
 
     private function isPublic(object $object, string $property): bool
@@ -65,9 +54,10 @@ class ObjectPropertyAccessor implements PropertyAccessorInterface
             return $object->{"is".ucfirst($property)}();
         }
         if (method_exists($object, "has".ucfirst($property))) {
-            return $object->{"is".ucfirst($property)}();
+            return $object->{"has".ucfirst($property)}();
         }
-        $closure = Closure::bind(static fn() => $this->$property ?? null, $object, $object);
+
+        $closure = Closure::bind(fn() => $this->$property ?? null, $object, $object);
 
         return $closure($object);
     }
@@ -77,6 +67,8 @@ class ObjectPropertyAccessor implements PropertyAccessorInterface
         //Try setter
         if (method_exists($object, "set".ucfirst($property))) {
             $object->{"set".ucfirst($property)}($value);
+
+            return;
         }
         $reader = function & ($object, $property) {
             $closure = Closure::bind(function & () use ($property) {
@@ -91,8 +83,19 @@ class ObjectPropertyAccessor implements PropertyAccessorInterface
 
     public function getPropertiesName($object): array
     {
+        //Get all properties from $object and all public from parents
         $closure = Closure::bind(fn() => get_class_vars($this::class), $object, $object);
+        $properties = array_keys($closure());
 
-        return array_keys($closure($object));
+        //in case there is parents, grab properties from all parents!
+        foreach (class_parents($object) as $parent) {
+            $closure = Closure::bind(function () {
+                return get_class_vars(self::class);
+            }, null, $parent);
+
+            $properties = [...$properties, ...array_keys($closure())];
+        }
+
+        return array_unique($properties);
     }
 }

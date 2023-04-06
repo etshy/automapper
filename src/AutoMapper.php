@@ -105,13 +105,12 @@ class AutoMapper implements AutoMapperInterface
     {
         $propertiesName = $mapping->getTargetPropertiesName($destination);
 
-
         foreach ($propertiesName as $propertyName) {
             $propertyMapper = $mapping->getPropertyMapperFor($propertyName);
             if ($propertyMapper instanceof MapperAwareInterface) {
                 $propertyMapper->setMapper($this);
             }
-            
+
             $propertyMapper->mapProperty($propertyName, $source, $destination);
         }
 

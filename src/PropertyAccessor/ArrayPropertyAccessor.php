@@ -9,9 +9,9 @@ use Etshy\AutoMapper\Exception\SourceNotIterableException;
 class ArrayPropertyAccessor implements PropertyReaderInterface
 {
 
-    public function sourceHasProperty($source, string $propertyName): bool
+    public function hasProperty($source, string $propertyNameName): bool
     {
-        return array_key_exists($propertyName, $source);
+        return array_key_exists($propertyNameName, $source);
     }
 
     public function getPropertyValue($source, string $propertyName): mixed

@@ -9,6 +9,12 @@ class PrivateProperties
     private ?string $prop1 = null;
     private ?int $prop2 = null;
 
+    private bool $boolProp = false;
+
+    private bool $boolProp2 = false;
+
+    private ?string $propWithoutGetSet = null;
+
     /**
      * @return string|null
      */
@@ -39,5 +45,37 @@ class PrivateProperties
     public function setProp2(?int $prop2): void
     {
         $this->prop2 = $prop2;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBoolProp(): bool
+    {
+        return $this->boolProp;
+    }
+
+    /**
+     * @param bool $boolProp
+     */
+    public function setBoolProp(bool $boolProp): void
+    {
+        $this->boolProp = $boolProp;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasBoolProp2(): bool
+    {
+        return $this->boolProp2;
+    }
+
+    /**
+     * @param bool $boolProp2
+     */
+    public function setBoolProp2(bool $boolProp2): void
+    {
+        $this->boolProp2 = $boolProp2;
     }
 }
