@@ -68,7 +68,7 @@ Simply ignore the target property
 
 ### Options
 
-#### IgnoreNullProperties
+#### IgnoreNullProperties/dontIgnoreNullProperties
 ```php
 $mapping = $this->config->registerMapping(Source::class, Target::class);
 $mapping->getOptions()->ignoreNullProperties();
@@ -76,6 +76,13 @@ $mapping->getOptions()->ignoreNullProperties();
 
 This option will ignore the source's null properties. Particularly useful when used with  `mapToObject`, but can be useful if you have default value in you Target class
 
+#### setPropertyWriter/setPropertyReader
+```php
+$mapping = $this->config->registerMapping(Source::class, Target::class);
+$mapping->getOptions()->setPropertyWriter(new SwaggerModelPropertyAccessor());
+```
+
+This option is useful if you want to use another PropertyReader/PropertyWriter than the default ones (`ObjectPropertyAccessor` and `ArrayPropertyAccessor`). I provide a `SwaggerModelPropertyAccessor` for Swagger generated Models.
 
 And that's it (for now).
 Hope this light library can help you !

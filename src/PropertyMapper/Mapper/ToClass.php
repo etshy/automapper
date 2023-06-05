@@ -28,7 +28,7 @@ class ToClass extends DefaultPropertyMapper implements MapperAwareInterface
 
     protected function getSourceValue(string $propertyName, $source)
     {
-        $value = $this->getReader($source)->getPropertyValue(
+        $value = $this->getReader()->getPropertyValue(
             $source,
             $propertyName
         );

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Etshy\AutoMapper\Configuration;
 
+use Etshy\AutoMapper\DataTypeEnum;
 use Etshy\AutoMapper\Exception\SourceNotIterableException;
-use Etshy\AutoMapper\PropertyAccessor\ObjectPropertyAccessor;
-use Etshy\AutoMapper\PropertyAccessor\PropertyWriterInterface;
+use Etshy\AutoMapper\PropertyAccessor\ArrayPropertyAccessor;
 use Etshy\AutoMapper\PropertyMapper\DefaultPropertyMapper;
 use Etshy\AutoMapper\PropertyMapper\PropertyMapper;
 use Etshy\AutoMapper\PropertyMapper\PropertyMapperInterface;
@@ -14,16 +14,20 @@ use Etshy\AutoMapper\PropertyMapper\PropertyMapperInterface;
 class Mapping implements MappingInterface
 {
     private array $propertyMappers = [];
-    private PropertyWriterInterface $propertyWriter;
     private PropertyMapperInterface $defaultPropertyMapper;
     private Options $options;
 
     public function __construct(
-        string $destination
+        string $source,
+        string $destination,
+        AutoMapperConfigurationInterface $autoMapperConfiguration,
     ) {
-        $this->options = new Options();
+        $this->options = clone $autoMapperConfiguration->getOptions();
 
-        $this->propertyWriter = new ObjectPropertyAccessor();
+        //array is only a source !
+        if ($source === DataTypeEnum::ARRAY) {
+            $this->options->setPropertyReader(new ArrayPropertyAccessor());
+        }
 
         $this->defaultPropertyMapper = new DefaultPropertyMapper();
         $this->defaultPropertyMapper->setOptions($this->options);
@@ -52,7 +56,7 @@ class Mapping implements MappingInterface
      */
     public function getTargetPropertiesName($destination): array
     {
-        return $this->propertyWriter->getPropertiesName($destination);
+        return $this->options->getPropertyWriter()->getPropertiesName($destination);
     }
 
     public function getPropertyMapperFor(string $propertyName): PropertyMapperInterface
@@ -64,4 +68,6 @@ class Mapping implements MappingInterface
     {
         return $this->options;
     }
+
+
 }

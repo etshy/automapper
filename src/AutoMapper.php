@@ -60,7 +60,6 @@ class AutoMapper implements AutoMapperInterface
         string $targetClass
     ): array {
         if (!is_iterable($sourceCollection)) {
-            //THROW EXCEPTION
             throw new SourceNotIterableException();
         }
 

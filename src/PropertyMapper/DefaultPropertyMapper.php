@@ -5,33 +5,15 @@ declare(strict_types=1);
 namespace Etshy\AutoMapper\PropertyMapper;
 
 use Etshy\AutoMapper\Configuration\Options;
-use Etshy\AutoMapper\PropertyAccessor\ArrayPropertyAccessor;
-use Etshy\AutoMapper\PropertyAccessor\ObjectPropertyAccessor;
-use Etshy\AutoMapper\PropertyAccessor\PropertyAccessorInterface;
 use Etshy\AutoMapper\PropertyAccessor\PropertyReaderInterface;
 use Etshy\AutoMapper\PropertyAccessor\PropertyWriterInterface;
 
 class DefaultPropertyMapper implements PropertyMapperInterface
 {
-    /**
-     * @var array<PropertyReaderInterface>
-     */
-    private array $propertyReaders;
-    /**
-     * @var array<PropertyWriterInterface>
-     */
-    private array $propertyWriters;
     protected Options $options;
 
     public function __construct()
     {
-        $this->propertyReaders = [
-            PropertyAccessorInterface::ARRAY_ACCESSOR => new ArrayPropertyAccessor(),
-            PropertyAccessorInterface::OBJECT_ACCESSOR => new ObjectPropertyAccessor(),
-        ];
-        $this->propertyWriters = [
-            PropertyAccessorInterface::OBJECT_ACCESSOR => new ObjectPropertyAccessor(),
-        ];
     }
 
     public function mapProperty(string $propertyName, array|object $source, array|object &$destination): void
@@ -47,7 +29,7 @@ class DefaultPropertyMapper implements PropertyMapperInterface
 
     protected function canMap(string $property, array|object $source, array|object $destination): bool
     {
-        if (!$this->getReader($source)->hasProperty($source, $property)) {
+        if (!$this->getReader()->hasProperty($source, $property)) {
             //for whatever reasons, the source doesn't have a property
             return false;
         }
@@ -57,7 +39,7 @@ class DefaultPropertyMapper implements PropertyMapperInterface
 
     protected function getSourceValue(string $propertyName, array|object $source)
     {
-        return $this->getReader($source)->getPropertyValue($source, $propertyName);
+        return $this->getReader()->getPropertyValue($source, $propertyName);
     }
 
     protected function setDestinationValue(string $propertyName, array|object $destination, mixed $value): void
@@ -69,18 +51,14 @@ class DefaultPropertyMapper implements PropertyMapperInterface
         $this->getWriter()->setPropertyValue($destination, $propertyName, $value);
     }
 
-    protected function getReader(array|object $object): PropertyReaderInterface
+    protected function getReader(): PropertyReaderInterface
     {
-        if (is_array($object)) {
-            return $this->propertyReaders[PropertyAccessorInterface::ARRAY_ACCESSOR];
-        }
-
-        return $this->propertyReaders[PropertyAccessorInterface::OBJECT_ACCESSOR];
+        return $this->options->getPropertyReader();
     }
 
     protected function getWriter(): PropertyWriterInterface
     {
-        return $this->propertyWriters[PropertyAccessorInterface::OBJECT_ACCESSOR];
+        return $this->getOptions()->getPropertyWriter();
     }
 
     public function setOptions(Options $options): void

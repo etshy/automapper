@@ -3,6 +3,7 @@
 
 namespace Etshy\Tests\PropertyMapper;
 
+use Etshy\AutoMapper\Configuration\Options;
 use Etshy\AutoMapper\PropertyMapper\DefaultPropertyMapper;
 use Etshy\Tests\Models\SimpleProperties\PublicProperties;
 use PHPUnit\Framework\TestCase;
@@ -14,6 +15,7 @@ class DefaultPropertyMapperTest extends TestCase
     protected function setUp(): void
     {
         $this->propertyMapper = new DefaultPropertyMapper();
+        $this->propertyMapper->setOptions(Options::defaultOptions());
     }
 
     public function testMapPropertyWorks(): void

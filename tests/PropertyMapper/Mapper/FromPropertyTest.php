@@ -3,6 +3,7 @@
 
 namespace Etshy\Tests\PropertyMapper\Mapper;
 
+use Etshy\AutoMapper\Configuration\Options;
 use Etshy\AutoMapper\PropertyMapper\Mapper\FromProperty;
 use Etshy\Tests\Models\SimpleProperties\PrivateProperties;
 use Etshy\Tests\Models\SimpleProperties\ProtectedProperties;
@@ -13,8 +14,8 @@ class FromPropertyTest extends TestCase
 
     public function testMapPropertyCantMap()
     {
-
         $fromProperty = new FromProperty('property');
+        $fromProperty->setOptions(Options::defaultOptions());
 
         $source = new PrivateProperties();
         $destination = new ProtectedProperties();

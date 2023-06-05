@@ -89,7 +89,7 @@ class ObjectPropertyAccessor implements PropertyAccessorInterface
 
         //in case there is parents, grab properties from all parents!
         foreach (class_parents($object) as $parent) {
-            $closure = Closure::bind(function () {
+            $closure = Closure::bind(static function () {
                 return get_class_vars(self::class);
             }, null, $parent);
 

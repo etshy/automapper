@@ -4,6 +4,7 @@
 namespace Etshy\Tests\Configuration;
 
 use Etshy\AutoMapper\Configuration\Options;
+use Etshy\AutoMapper\PropertyAccessor\ObjectPropertyAccessor;
 use PHPUnit\Framework\TestCase;
 
 class OptionsTest extends TestCase
@@ -20,5 +21,13 @@ class OptionsTest extends TestCase
         $options->dontIgnoreNullProperties();
         $result = $options->shouldNullPropertiesIgnored();
         $this->assertFalse($result);
+    }
+
+    public function testDefaultOptions()
+    {
+        $options = Options::defaultOptions();
+        $this->assertFalse($options->shouldNullPropertiesIgnored());
+        $this->assertInstanceOf(ObjectPropertyAccessor::class, $options->getPropertyWriter());
+        $this->assertInstanceOf(ObjectPropertyAccessor::class, $options->getPropertyReader());
     }
 }
